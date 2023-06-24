@@ -492,7 +492,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 431923769}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f00ecc764a5f15646a49d437b40f9809, type: 3}
+  m_Script: {fileID: 11500000, guid: f16d15cb2296ed64da281c48f1a68735, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 12
@@ -778,8 +778,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< Updated upstream
   m_GameObject: {fileID: 1309013833}
   m_LocalRotation: {x: 0.29635394, y: -0.000000016433438, z: 0.0000000050991784, w: 0.9550782}
+=======
+  m_GameObject: {fileID: 934933740}
+  m_LocalRotation: {x: 1.2787502e-16, y: 0.070889026, z: -9.087799e-18, w: 0.9974842}
+>>>>>>> Stashed changes
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
