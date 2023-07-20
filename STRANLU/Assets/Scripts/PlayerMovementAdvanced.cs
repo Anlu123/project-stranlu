@@ -39,7 +39,10 @@ public class PlayerMovementAdvanced : MonoBehaviour
     public float maxSlopeAngle;
     private RaycastHit slopeHit;
     private bool exitingSlope;
-    
+
+
+    //Animator
+    public Animator squirrelAnimator;
 
     public Transform orientation;
 
@@ -57,6 +60,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
         sprinting,
         walljumping,
         sliding,
+        quieto,
         air
     }
 
@@ -135,18 +139,29 @@ public class PlayerMovementAdvanced : MonoBehaviour
         // Mode - Sprinting
         else if(grounded && Input.GetKey(sprintKey))
         {
+            squirrelAnimator.SetBool("isRunning", true);
+            squirrelAnimator.SetBool("isWalking", false);
             state = MovementState.sprinting;
             desiredMoveSpeed = sprintSpeed;
         }
 
         // Mode - Walking
-        else if (grounded)
+        else if (grounded && !Input.GetKey(sprintKey) && IsMoving())
         {
             state = MovementState.walking;
+            squirrelAnimator.SetBool("isWalking", true);
+            squirrelAnimator.SetBool("isRunning", false);
             desiredMoveSpeed = walkSpeed;
         }
 
-        // Mode - Air
+        else if (grounded)
+        {
+            state = MovementState.quieto;
+            squirrelAnimator.SetBool("isWalking", false);
+            squirrelAnimator.SetBool("isRunning", false);
+        }
+
+        // Mode - Air Falling
         else
         {
             state = MovementState.air;
@@ -272,5 +287,12 @@ public class PlayerMovementAdvanced : MonoBehaviour
     public Vector3 GetSlopeMoveDirection(Vector3 direction)
     {
         return Vector3.ProjectOnPlane(direction, slopeHit.normal).normalized;
+    }
+
+    private bool IsMoving()
+    {
+        // Comprobar si alguna tecla W, A, S o D está siendo presionada.
+        // Si se presiona alguna de estas teclas, devolver true, de lo contrario, devolver false.
+        return Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D);
     }
 }

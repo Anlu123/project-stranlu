@@ -365,10 +365,14 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 143254774460203314, guid: 4806ce87d10ee3f46971040bb1ca421b, type: 3}
     - {fileID: 114278706892336774, guid: 4806ce87d10ee3f46971040bb1ca421b, type: 3}
+    - {fileID: 95428816592087742, guid: 4806ce87d10ee3f46971040bb1ca421b, type: 3}
     m_RemovedGameObjects:
     - {fileID: 1727303766884094, guid: 4806ce87d10ee3f46971040bb1ca421b, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1298017794759012, guid: 4806ce87d10ee3f46971040bb1ca421b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1943661852}
   m_SourcePrefab: {fileID: 100100000, guid: 4806ce87d10ee3f46971040bb1ca421b, type: 3}
 --- !u!1 &205874359
 GameObject:
@@ -573,8 +577,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 200690d588b68ff44a81e2e35c59d26e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 15
-  sprintSpeed: 20
+  walkSpeed: 5
+  sprintSpeed: 10
   slideSpeed: 40
   wallrunSpeed: 0
   speedIncreaseMultiplier: 5
@@ -590,6 +594,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   maxSlopeAngle: 40
+  squirrelAnimator: {fileID: 1943661852}
   orientation: {fileID: 1928967768}
   state: 0
   sliding: 0
@@ -1796,3 +1801,29 @@ Transform:
   m_Father: {fileID: 431923770}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1943661851 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1298017794759012, guid: 4806ce87d10ee3f46971040bb1ca421b, type: 3}
+  m_PrefabInstance: {fileID: 188570321}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1943661852
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1943661851}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 81610c3843b56f44d9b28ea5c643bcc5, type: 3}
+  m_Controller: {fileID: 9100000, guid: d7cf9b3cdfdc5a649887f10a67038204, type: 2}
+  m_CullingMode: 1
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
