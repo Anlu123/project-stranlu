@@ -107,9 +107,8 @@ public class PlayerMovementAdvanced : MonoBehaviour
         if(Input.GetKey(jumpKey) && readyToJump && grounded)
         {
             readyToJump = false;
-
+            
             Jump();
-
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
@@ -117,6 +116,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
     private void StateHandler()
     {
+
         // Mode - Wallrunning
         if(walljumping) 
         {
@@ -139,8 +139,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
         // Mode - Sprinting
         else if(grounded && Input.GetKey(sprintKey))
         {
-            squirrelAnimator.SetBool("isRunning", true);
-            squirrelAnimator.SetBool("isWalking", false);
+            squirrelAnimator.SetInteger("stateAnimator",2);
             state = MovementState.sprinting;
             desiredMoveSpeed = sprintSpeed;
         }
@@ -149,21 +148,20 @@ public class PlayerMovementAdvanced : MonoBehaviour
         else if (grounded && !Input.GetKey(sprintKey) && IsMoving())
         {
             state = MovementState.walking;
-            squirrelAnimator.SetBool("isWalking", true);
-            squirrelAnimator.SetBool("isRunning", false);
+            squirrelAnimator.SetInteger("stateAnimator", 1);
             desiredMoveSpeed = walkSpeed;
         }
 
         else if (grounded)
         {
             state = MovementState.quieto;
-            squirrelAnimator.SetBool("isWalking", false);
-            squirrelAnimator.SetBool("isRunning", false);
+            squirrelAnimator.SetInteger("stateAnimator", 0);
         }
 
         // Mode - Air Falling
         else
         {
+            squirrelAnimator.SetInteger("stateAnimator", 3);
             state = MovementState.air;
         }
 
@@ -263,7 +261,6 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
         // reset y velocity
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
     private void ResetJump()
