@@ -25,15 +25,18 @@ public class PlayerMovement : MonoBehaviour
     public float gravity = -10f;
     public float jumpHeight = 3f;
 
-    
-    Vector3 velocity;
-    bool isJumping;
+    [Header("Landing")]
+    public float landDistance = 2f; // distancia para detectar el aterrizaje
+    private float lastTimeGrounded; // tiempo desde que tocó el suelo por última vez
 
+    Vector3 velocity;
+
+    int animatorState;
 
     // Start is called before the first frame update
     void Start()
     {
-        Time.timeScale = 0.5f;
+        //Time.timeScale = 0.5f;
         controller =   GetComponent<CharacterController>();
     }
 
@@ -54,22 +57,43 @@ public class PlayerMovement : MonoBehaviour
         Vector3 move = orientation.forward * z + orientation.right * x;
         controller.Move(move * speed * Time.deltaTime);
 
-        //Salto
-        if(Input.GetButtonDown("Jump") && isGrounded)
+        if (Input.GetButtonDown("Jump") && isGrounded)
         {
+            lastTimeGrounded = Time.time;
             squirrelAnimator.SetInteger("stateAnimator", 3);
-            isJumping = true; 
+            animatorState = 3;
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
         else if (isGrounded && IsMoving())
         {
             squirrelAnimator.SetInteger("stateAnimator", 1);
+            lastTimeGrounded = Time.time; // Actualizamos la última vez que estuvo en el suelo cuando se está moviendo en el suelo
+            animatorState = 1;
         }
         else if (isGrounded)
         {
-            isJumping= false;
             squirrelAnimator.SetInteger("stateAnimator", 0);
+            lastTimeGrounded = Time.time; // Actualizamos la última vez que estuvo en el suelo cuando se está quieto en el suelo
+            animatorState = 0;
         }
+        else //Cayendo o aterrizando
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(transform.position, -transform.up, out hit, landDistance, groundMask) && Time.time - lastTimeGrounded > 0.1f)
+            {
+                // Si el suelo está a una distancia 'landDistance', haz la animación de aterrizaje
+                squirrelAnimator.SetInteger("stateAnimator", 4);
+                animatorState = 4;
+            }
+            else if (Time.time - lastTimeGrounded > 2)
+            {
+                // Si ha pasado más de 2 segundos desde la última vez que tocó el suelo, haga la animación de caer
+                squirrelAnimator.SetInteger("stateAnimator", 5);
+                animatorState = 5;
+            }
+        }
+
+        Debug.Log(animatorState);
 
         //Aplica gravedad
         velocity.y += gravity * Time.deltaTime;
