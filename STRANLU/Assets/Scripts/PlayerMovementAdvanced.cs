@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -61,6 +62,7 @@ public class PlayerMovementAdvanced : MonoBehaviour
         walljumping,
         sliding,
         quieto,
+        saltando,
         air
     }
 
@@ -69,6 +71,8 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
     private void Start()
     {
+        Time.timeScale = 0.5f;
+
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
 
@@ -79,22 +83,28 @@ public class PlayerMovementAdvanced : MonoBehaviour
 
     private void Update()
     {
+        
         // ground check
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
         MyInput();
-        SpeedControl();
         StateHandler();
+        SpeedControl();
 
         // handle drag
         if (grounded)
+        {
             rb.drag = groundDrag;
+        }
         else
+        {
             rb.drag = 0;
+        }
+        
     }
 
     private void FixedUpdate()
-    {
+    {        
         MovePlayer();
     }
 
@@ -103,28 +113,27 @@ public class PlayerMovementAdvanced : MonoBehaviour
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
-        // when to jump
-        if(Input.GetKey(jumpKey) && readyToJump && grounded)
-        {
-            readyToJump = false;
-            
-            Jump();
-            Invoke(nameof(ResetJump), jumpCooldown);
-        }
-
     }
 
     private void StateHandler()
     {
 
-        // Mode - Wallrunning
-        if(walljumping) 
-        {
-            state = MovementState.walljumping;
-        }
 
         // Mode - Sliding
-        if (sliding)
+        //when to jump
+        if (Input.GetKey(jumpKey) && grounded)
+        {
+            readyToJump = false;
+            squirrelAnimator.SetInteger("stateAnimator", 3);
+            exitingSlope = true;
+
+            // reset y velocity
+            rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+            //Invoke(nameof(ResetJump), jumpCooldown);
+        }
+        else if (sliding)
         {
             state = MovementState.sliding;
 
@@ -134,7 +143,6 @@ public class PlayerMovementAdvanced : MonoBehaviour
             else
                 desiredMoveSpeed = sprintSpeed;
         }
-
 
         // Mode - Sprinting
         else if(grounded && Input.GetKey(sprintKey))
@@ -151,59 +159,21 @@ public class PlayerMovementAdvanced : MonoBehaviour
             squirrelAnimator.SetInteger("stateAnimator", 1);
             desiredMoveSpeed = walkSpeed;
         }
+        
 
         else if (grounded)
         {
             state = MovementState.quieto;
-            squirrelAnimator.SetInteger("stateAnimator", 0);
+            //squirrelAnimator.SetInteger("stateAnimator", 0);
         }
 
         // Mode - Air Falling
         else
         {
-            squirrelAnimator.SetInteger("stateAnimator", 3);
+            squirrelAnimator.SetInteger("stateAnimator", 4);
             state = MovementState.air;
         }
 
-        // check if desiredMoveSpeed has changed drastically
-        if(Mathf.Abs(desiredMoveSpeed - lastDesiredMoveSpeed) > 4f && moveSpeed != 0)
-        {
-            StopAllCoroutines();
-            StartCoroutine(SmoothlyLerpMoveSpeed());
-        }
-        else
-        {
-            moveSpeed = desiredMoveSpeed;
-        }
-
-        lastDesiredMoveSpeed = desiredMoveSpeed;
-    }
-
-    private IEnumerator SmoothlyLerpMoveSpeed()
-    {
-        // smoothly lerp movementSpeed to desired value
-        float time = 0;
-        float difference = Mathf.Abs(desiredMoveSpeed - moveSpeed);
-        float startValue = moveSpeed;
-
-        while (time < difference)
-        {
-            moveSpeed = Mathf.Lerp(startValue, desiredMoveSpeed, time / difference);
-
-            if (OnSlope())
-            {
-                float slopeAngle = Vector3.Angle(Vector3.up, slopeHit.normal);
-                float slopeAngleIncrease = 1 + (slopeAngle / 90f);
-
-                time += Time.deltaTime * speedIncreaseMultiplier * slopeIncreaseMultiplier * slopeAngleIncrease;
-            }
-            else
-                time += Time.deltaTime * speedIncreaseMultiplier;
-
-            yield return null;
-        }
-
-        moveSpeed = desiredMoveSpeed;
     }
 
     private void MovePlayer()
@@ -263,12 +233,15 @@ public class PlayerMovementAdvanced : MonoBehaviour
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
+
+    /*
     private void ResetJump()
     {
         readyToJump = true;
 
         exitingSlope = false;
     }
+   */
 
     public bool OnSlope()
     {
