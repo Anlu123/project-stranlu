@@ -28,7 +28,6 @@ public class PlayerMovement1 : MonoBehaviour
     private float lastTimeTouchedFloor;
     public float tiempoMinimoAnim;
 
-
     Animator anim;
 
     private void Start()
@@ -41,7 +40,7 @@ public class PlayerMovement1 : MonoBehaviour
     {
         tocaPiso = Physics.CheckSphere(detectaPiso.position, distanciaPiso, mascaraPiso);
 
-        if(tocaPiso)
+        if (tocaPiso)
         {
             anim.SetBool("salto", false);
             lastTimeTouchedFloor = Time.time;
@@ -60,7 +59,7 @@ public class PlayerMovement1 : MonoBehaviour
             if (Time.time - lastTimeTouchedFloor >= tiempoMinimoAnim && Physics.Raycast(transform.position, -transform.up, out hit, distanciaDeteccion, mascaraPiso))
             {
                 Debug.Log("Aterrizando:  " + distanciaDeteccion);
-                anim.SetFloat("saltos", 1, 0, Time.deltaTime); //Aterriza
+                anim.SetInteger("saltos", 1); //Aterriza
             }
         }
 
@@ -68,7 +67,7 @@ public class PlayerMovement1 : MonoBehaviour
         {
             velocity.y = Mathf.Sqrt(alturaDeSalto * -2 * gravedad);
             anim.SetBool("salto", true);
-            anim.SetFloat("saltos", 0, 0, Time.deltaTime);
+            anim.SetInteger("saltos", 0);
         }
 
         velocity.y += gravedad * Time.deltaTime;
@@ -99,7 +98,8 @@ public class PlayerMovement1 : MonoBehaviour
                 controller.Move(move * velocidad * Time.deltaTime);
                 anim.SetFloat("movimientos", 0.5f, 0.1f, Time.deltaTime);
             }
-        }   
+        }
 
     }
+
 }
