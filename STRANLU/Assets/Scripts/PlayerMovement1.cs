@@ -19,10 +19,15 @@ public class PlayerMovement1 : MonoBehaviour
     public float distanciaPiso;
     public LayerMask mascaraPiso;
 
-    float velocidadGiro;
     float gravedad = -20f;
     Vector3 velocity;
     bool tocaPiso;
+
+    [Header("Deteccion suelo animacion")]
+    public float distanciaDeteccion;
+    private float lastTimeTouchedFloor;
+    public float tiempoMinimoAnim;
+
 
     Animator anim;
 
@@ -36,21 +41,34 @@ public class PlayerMovement1 : MonoBehaviour
     {
         tocaPiso = Physics.CheckSphere(detectaPiso.position, distanciaPiso, mascaraPiso);
 
+        if(tocaPiso)
+        {
+            anim.SetBool("salto", false);
+            lastTimeTouchedFloor = Time.time;
+        }
+
         if (tocaPiso && velocity.y < 0)
         {
             velocity.y = -2f;
-            anim.SetBool("salto", false);
         }
+
         if (!tocaPiso)
         {
-            anim.SetBool("salto", true);
+            Debug.DrawRay(transform.position, -transform.up * distanciaDeteccion, Color.red);
 
+            RaycastHit hit;
+            if (Time.time - lastTimeTouchedFloor >= tiempoMinimoAnim && Physics.Raycast(transform.position, -transform.up, out hit, distanciaDeteccion, mascaraPiso))
+            {
+                Debug.Log("Aterrizando:  " + distanciaDeteccion);
+                anim.SetFloat("saltos", 1, 0, Time.deltaTime); //Aterriza
+            }
         }
 
         if (Input.GetButtonDown("Jump") && tocaPiso)
         {
             velocity.y = Mathf.Sqrt(alturaDeSalto * -2 * gravedad);
             anim.SetBool("salto", true);
+            anim.SetFloat("saltos", 0, 0, Time.deltaTime);
         }
 
         velocity.y += gravedad * Time.deltaTime;

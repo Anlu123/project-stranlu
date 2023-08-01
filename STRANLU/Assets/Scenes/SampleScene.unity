@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.7018396, g: 0.78017706, b: 0.7678828, a: 1}
+  m_IndirectSpecularColor: {r: 0.7018344, g: 0.78017443, b: 0.76788247, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1170,7 +1170,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   velocidad: 10
   velCorriendo: 20
-  alturaDeSalto: 2
+  alturaDeSalto: 3
   tiempoAlGirar: 0.1
   orientation: {fileID: 617818962}
   detectaPiso: {fileID: 1613320830}
@@ -1178,6 +1178,8 @@ MonoBehaviour:
   mascaraPiso:
     serializedVersion: 2
     m_Bits: 8
+  distanciaDeteccion: 2.5
+  tiempoMinimoAnim: 0.4
 --- !u!1001 &741984249
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1525,7 +1527,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 934933740}
-  m_LocalRotation: {x: -0.041380048, y: 0.041522987, z: 0.001721186, w: 0.9982788}
+  m_LocalRotation: {x: -0.041380066, y: 0.04152301, z: 0.0017211878, w: 0.9982788}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
