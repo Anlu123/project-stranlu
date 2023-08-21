@@ -22,7 +22,6 @@ public class PlayerMovement1 : MonoBehaviour
     float gravedad = -20f;
     Vector3 velocity;
     bool tocaPiso;
-    bool enAire;
 
     [Header("Deteccion suelo animacion")]
     public float distanciaDeteccion;
@@ -49,7 +48,6 @@ public class PlayerMovement1 : MonoBehaviour
 
         if (tocaPiso)
         {
-            enAire = false;
             anim.SetBool("saltando", false);
             anim.SetBool("aterrizando", false);
         }
@@ -57,7 +55,6 @@ public class PlayerMovement1 : MonoBehaviour
         else if (!tocaPiso)
         {
             Debug.DrawRay(transform.position, -transform.up * distanciaDeteccion, Color.red);
-            enAire = true;
             RaycastHit hit;
 
             if (Physics.Raycast(transform.position, -transform.up, out hit, distanciaDeteccion, mascaraPiso))
@@ -69,7 +66,7 @@ public class PlayerMovement1 : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && tocaPiso)
         {
-            enAire = true;
+
             anim.SetBool("saltando", true);
             velocity.y = Mathf.Sqrt(alturaDeSalto * -2 * gravedad);
         }
@@ -81,7 +78,7 @@ public class PlayerMovement1 : MonoBehaviour
         Vector3 direccion = new Vector3(x, 0, z).normalized;
 
         //Idle
-        if (!enAire && direccion.magnitude <= 0 && tocaPiso)
+        if (direccion.magnitude <= 0 && tocaPiso)
         {
             anim.SetFloat("movimientos", 0, 0.1f, Time.deltaTime);
         }
@@ -92,13 +89,13 @@ public class PlayerMovement1 : MonoBehaviour
             Vector3 move = orientation.forward * z + orientation.right * x;
 
             //Corriendo
-            if (!enAire && Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.LeftShift))
             {
                 controller.Move(move * velCorriendo * Time.deltaTime);
                 anim.SetFloat("movimientos", 1, 0.1f, Time.deltaTime);
             }
             // Caminando
-            else if (!enAire) 
+            else
             {
                 controller.Move(move * velocidad * Time.deltaTime);
                 anim.SetFloat("movimientos", 0.5f, 0.1f, Time.deltaTime);
